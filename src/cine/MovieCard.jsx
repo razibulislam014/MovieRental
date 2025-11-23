@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { toast } from "react-toastify";
 import { MovieContext } from "../context";
 import { getImageUrl } from "../utils/cine-utility";
 import MovieDetailsModal from "./MovieDetailsModal";
@@ -8,7 +9,7 @@ export default function MovieCard({ movie }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  const { cartData, setCartData } = useContext(MovieContext);
+  const { state, dispatch } = useContext(MovieContext);
 
   function handleModalClose() {
     setSelectedMovie(null);
@@ -22,16 +23,24 @@ export default function MovieCard({ movie }) {
 
   function handleAddToCart(e, movie) {
     e.stopPropagation();
-    const found = cartData.find((item) => {
+    const found = state.cartData.find((item) => {
       return item.id === movie.id;
     });
 
     if (!found) {
-      setCartData([...cartData, movie]);
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: {
+          ...movie,
+        },
+      });
+      toast.success(`Movie ${movie.title} added Successfully`, {
+        position: "bottom-right",
+      });
     } else {
-      console.error(
-        `The Movie ${movie.title} has been added to the cart already`
-      );
+      toast.error(`Movie ${movie.title} has been added to the cart already`, {
+        position: "bottom-right",
+      });
     }
   }
 
@@ -54,14 +63,13 @@ export default function MovieCard({ movie }) {
             <div className="flex items-center space-x-1 mb-5">
               <Rating value={movie.rating} />
             </div>
-            <a
+            <button
               className="bg-primary rounded-lg py-2 px-5 flex items-center justify-center gap-2 text-[#171923] font-semibold text-sm"
-              href="#"
               onClick={(e) => handleAddToCart(e, movie)}
             >
               <img src="./assets/tag.svg" alt="" />
               <span>${movie.price} | Add to Cart</span>
-            </a>
+            </button>
           </figcaption>
         </a>
       </figure>

@@ -6,10 +6,14 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 
 export default function Page() {
-  const { darkMode } = useContext(ThemeContext);
+  const { darkMood } = useContext(ThemeContext);
+
+  console.log(darkMood);
 
   return (
-    <div className={`h-full w-full ${darkMode ? "dark" : ""}`}>
+    <div
+      className={`h-full w-full ${darkMood ? "bg-[#171923] text-white" : ""}`}
+    >
       <Header />
       <main>
         <div className="container grid lg:grid-cols-[218px_1fr] gap-14">
